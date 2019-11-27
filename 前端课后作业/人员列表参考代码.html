@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #person-cover {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, .6);
+            display: none;
+        }
+
+        #person-panel {
+            width: 800px;
+            height: 400px;
+            position: absolute;
+            background: white;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .panel-title {
+            height: 60px;
+            line-height: 60px;
+            color: #858585;
+        }
+
+        #person-panel-close-btn {
+            float: right;
+            margin-right: 25px;
+            cursor: pointer;
+        }
+
+        #panel-title-desc {
+            margin-left: 25px;
+        }
+
+        .person-input-label {
+            display: block;
+            height: 80px;
+            line-height: 80px;
+            text-align: right;
+            margin-right: 200px;
+            color: #A3A3A3;
+        }
+
+        .person-input-label > input {
+            width: 500px;
+            height: 30px;
+            border-radius: 4px;
+            border: 1px solid #E5E5E5;
+
+        }
+
+        hr {
+            background-color: #EEEEEE;
+            height: 1px;
+            border: none;
+        }
+
+        .person-panel-btn-warp {
+            text-align: right;
+            padding-right: 50px;
+            padding-top: 30px;
+        }
+
+        .required-label {
+            color: red;
+        }
+
+        .btn-common {
+            background-color: #0088FF;
+            color: white;
+            padding: 5px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            margin-left: 15px;
+        }
+
+        #person-table-wrap {
+            width: 800px;
+            margin: 50px auto;
+        }
+
+        .person-table-title-wrap {
+            height: 60px;
+            line-height: 60px;
+        }
+
+        .person-table-title {
+            border-left: 5px solid #0095F9;
+            padding-left: 15px;
+        }
+
+        #add-person {
+            float: right;
+            margin: 15px;
+        }
+
+        #person-table {
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+
+        }
+
+        #person-table tr {
+            height: 60px;
+
+        }
+
+        #person-table thead tr {
+            background-color: #FAFAFA;
+        }
+
+        #person-table thead tr th {
+            font-weight: normal;
+        }
+
+        .first-col {
+            padding-left: 20px;
+        }
+
+        .delete-row, .modify-row {
+            color: #0095F9;
+            cursor: pointer;
+        }
+
+        #row-template {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="person-table-wrap">
+    <div class="person-table-title-wrap">
+        <span class="person-table-title">人员列表</span>
+        <button class="btn-common" id="add-person">添加人员</button>
+    </div>
+    <table id="person-table">
+        <thead>
+        <tr>
+            <th class="first-col">人员名称</th>
+            <th>年龄</th>
+            <th>编号</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="person-list">
+        <tr id="row-template">
+            <td class="first-col"></td>
+            <td></td>
+            <td></td>
+            <td><a class="delete-row">删除</a>&nbsp;<a class="modify-row">修改</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div id="person-cover">
+    <div id="person-panel">
+        <div class="panel-title">
+            <span id="panel-title-desc">添加人员</span>
+            <span id="person-panel-close-btn">X</span>
+        </div>
+        <hr>
+        <div id="person-input-wrap">
+            <label class="person-input-label"><span class="required-label">*</span>人员名称：
+                <input>
+            </label>
+            <label class="person-input-label">年龄：
+                <input>
+            </label>
+            <label class="person-input-label">编号：
+                <input>
+            </label>
+        </div>
+        <hr>
+        <div class="person-panel-btn-warp">
+            <button id="submit-btn" class="btn-common">确定</button>
+            <button id="cancel-btn" class="btn-common">取消</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="jquery-3.4.1.js"></script>
+<script>
+
+
+
+<!--    点击X按钮和取消按钮就会执行清空框里内容的函数，并且隐藏遮罩-->
+    $(function () {
+        $("#person-panel-close-btn,#cancel-btn").click(function () {
+            clearPersonInput();
+            $("#person-cover").hide();
+        });
+
+        $("#add-person").click(function () {
+            $("#panel-title-desc").text("添加人员");
+            $("#person-cover").show();
+        });
+
+        $(".delete-row").click(function () {
+            if (confirm("确定要删除吗？")) {
+                $(this).closest("tr").remove();
+            }
+        });
+
+        $(".modify-row").click(function () {
+            // 获取待修改的行的数据，将每列数据取出来放到一个数组里面
+            // not 是过滤掉最后一个td，这个td里面放的是操作，不需要取
+            var oriRowValues = $(this).closest("tr").find("td").not(":last").map(function () {
+                return $(this).text();
+            }).get();
+
+            // 将修改这行的数据填写到panel里面去
+            for (var i in oriRowValues) {
+                $("#person-input-wrap input").eq(i).val(oriRowValues[i]);
+            }
+
+            // 获取到当前点击的所在的是第几行
+            var modifyIndex = $("#person-list tr").index($(this).closest("tr"));
+
+            // 将所在行数据写入到该元素中，用来在panel确定的时候修改制定index中的数据
+            $("#panel-title-desc").text("修改人员").data("modifyFlag", modifyIndex);
+
+            $("#person-cover").show();
+        });
+
+        $("#submit-btn").click(function () {
+            var modifyIndex = $("#panel-title-desc").data("modifyFlag");
+
+            // 查询所有的添加窗口的input内容，将用户填写的内容转换成一个数组
+            var values = $("#person-input-wrap input").map(function () {
+                return $(this).val();
+            }).get();
+
+            if (modifyIndex === undefined) {
+                // 添加
+                addRow(values);
+            } else {
+                // 修改
+                modifyRow(values, modifyIndex);
+            }
+            $("#panel-title-desc").removeData("modifyFlag");
+            clearPersonInput();
+            $("#person-cover").hide();
+        });
+
+        function modifyRow(values, modifyIndex) {
+            // 找到指定行的所有td
+            var modifyTds = $("#person-list tr").eq(modifyIndex).children();
+            for (var i in values) {
+                modifyTds.eq(i).text(values[i]);
+            }
+        }
+
+        function addRow(values) {
+            // 复制table中的一行tr元素，该元素隐藏，作为每次添加的模板
+            var newRow = $("#row-template").clone(true);
+            // 将复制的模板中的id属性移除
+            newRow.removeAttr("id");
+            for (var i in values) {
+                newRow.children().eq(i).text(values[i]);
+            }
+
+            $("#person-list").append(newRow);
+        }
+
+        function clearPersonInput() {
+            $("#person-input-wrap input").each(function (index, obj) {
+                $(obj).val("");
+            });
+        }
+    });
+
+</script>
+</body>
+</html>

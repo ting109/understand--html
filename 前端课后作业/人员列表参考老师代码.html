@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        /*body, html {*/
+        /*    height: 100%;*/
+        /*}*/
+
+        #person-cover {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, .6);
+            display: none;
+        }
+
+        #person-panel {
+            width: 800px;
+            height: 400px;
+            position: absolute;
+            background: white;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .panel-title {
+            height: 60px;
+            line-height: 60px;
+            color: #858585;
+        }
+
+        #person-panel-close-btn {
+            float: right;
+            margin-right: 25px;
+            cursor: pointer;
+        }
+
+        #panel-title-desc {
+            margin-left: 25px;
+        }
+
+        .person-input-label {
+            display: block;
+            height: 80px;
+            line-height: 80px;
+            text-align: right;
+            margin-right: 100px;
+            color: #A3A3A3;
+        }
+
+        .person-input-label > input {
+            width: 500px;
+            height: 30px;
+            border-radius: 4px;
+            border: 1px solid #E5E5E5;
+
+        }
+
+        hr {
+            background-color: #EEEEEE;
+            height: 1px;
+            border: none;
+        }
+
+        .person-panel-btn-warp {
+            text-align: right;
+            padding-right: 50px;
+            padding-top: 30px;
+        }
+
+        .required-label {
+            color: red;
+        }
+
+        .btn-common {
+            background-color: #0088FF;
+            color: white;
+            padding: 5px 15px;
+            font-size: 14px;
+            border-radius: 5px;
+            margin-left: 15px;
+        }
+
+        #person-table-wrap {
+            width: 800px;
+            margin: 50px auto;
+        }
+
+        .person-table-title-wrap {
+            height: 60px;
+            line-height: 60px;
+        }
+
+        .person-table-title {
+            border-left: 5px solid #0095F9;
+            padding-left: 15px;
+        }
+
+        #add-person {
+            float: right;
+            margin: 15px;
+        }
+
+        #person-table {
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+        }
+
+        #person-table tr {
+            height: 60px;
+        }
+
+        #person-table thead tr {
+            background-color: #FAFAFA;
+        }
+
+        #person-table thead tr th {
+            font-weight: normal;
+        }
+
+        .first-col {
+            padding-left: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="person-table-wrap">
+    <div class="person-table-title-wrap">
+        <span class="person-table-title">人员列表</span>
+        <button class="btn-common" id="add-person">添加人员</button>
+    </div>
+    <table id="person-table">
+        <thead>
+        <tr>
+            <th class="first-col">人员名称</th>
+            <th>年龄</th>
+            <th>编号</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="person-list"></tbody>
+    </table>
+</div>
+
+
+<div id="person-cover">
+    <div id="person-panel">
+        <div class="panel-title">
+            <span id="panel-title-desc">添加人员</span>
+            <span id="person-panel-close-btn">X</span>
+        </div>
+        <hr>
+        <div id="person-input-wrap">
+            <label class="person-input-label"><span class="required-label">*</span>人员名称：
+                <input>
+            </label>
+            <label class="person-input-label">年龄：
+                <input>
+            </label>
+            <label class="person-input-label">编号：
+                <input>
+            </label>
+        </div>
+        <hr>
+        <div class="person-panel-btn-warp">
+            <button id="submit-btn" class="btn-common">确定</button>
+            <button id="cancel-btn" class="btn-common">取消</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="jquery-3.4.1.js"></script>
+<script>
+    $(function () {
+        $("#person-panel-close-btn,#cancel-btn").click(function () {
+            clearPersonInput();
+            $("#person-cover").hide();
+        });
+
+        $("#add-person").click(function () {
+            $("#person-cover").show();
+        });
+
+        $("#submit-btn").click(function () {
+            // var arr = [];
+            // var obj = {};
+
+            var arr = [];
+
+            $("#person-input-wrap input").each(function (index, obj) {
+                arr.push($(obj).val());
+            });
+
+
+            var values = $("#person-input-wrap input").map(function () {
+                return $(this).val();
+            }).get();
+
+            // console.log($("#person-input-wrap input").map(function () {
+            //     return $(this).val();
+            // }));
+            console.log(arr);
+        });
+
+
+        function clearPersonInput() {
+            // console.log($("#person-input-wrap input"));
+            $("#person-input-wrap input").each(function (index, obj) {
+                $(obj).val("");
+            });
+        }
+    });
+
+</script>
+</body>
+</html>
