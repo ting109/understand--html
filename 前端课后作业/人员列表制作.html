@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        /*设置遮罩，也就是半透明的部分，遮罩的宽度和高度要占满整个屏幕。
+        另外还要对遮罩进行定位，此处用绝对定位fixed，是相对于浏览器进行定位.
+        display属性规定元素应该生成的框的类型，display:none表示此元素不会被显示;display:block表示此元素会被显示为块级元素。
+        */
+        body{
+            width:100%;
+            height:100%;
+        }
+        #cover{
+            width:100%;
+            height:100%;
+            position:fixed;
+            top:0;
+            left:0;
+            background-color:rgba(0,0,0,.6);
+            display:none;
+
+        }
+        #person-panel {
+            width: 800px;
+            height: 400px;
+            background-color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /*设置表格第一行的高度为60px; line-height是设置行间距*/
+        .person-panel-title{
+            height:60px;
+            color:black;
+            line-height: 60px;
+        }
+        /*“添加人员”属于行内元素，不可以设置宽高。并且行内元素设置margin只对左右有效，上下无效，padding上下左右都有效。
+        line-height是设置行间距;*/
+        .person-panel-desc{
+            margin-left:25px;
+        }
+        #person-panel-btn{
+            float:right;
+            margin-right: 25px;
+            /*cursor: pointer是将当鼠标移动到此处时，鼠标会变成小手形状。*/
+            cursor: pointer;
+        }
+        /*首先要将该label设置为块元素，因为块元素默认独占一整行，会自动换行。*/
+        .person-input-label{
+             display:block;
+             height:80px;
+             line-height:50px;
+            text-align: right;
+            margin-right: 200px;
+         }
+        /*把input框的宽度和高度设置一下,border-radius用来设置框的圆边角。*/
+        .person-input-label > input{
+            width:400px;
+            height:30px;
+            border-radius: 4px;
+            border:1px solid #E5E5E5;
+        }
+        .required-label{
+            color:red;
+        }
+        .btn-commom {
+            background-color: #0088FF;
+            color: white;
+            border-radius: 4px;
+            float: right;
+            padding: 5px 15px;
+            margin: 5px 10px;
+        }
+        #person-table-wrap{
+            width:800px;
+            margin:50px auto;
+        }
+        .person-table-title-wrap{
+            width:100%;
+            height:40px;
+        }
+        .person-table-title{
+            border-left: 3px solid green;
+            padding-left:6px;
+        }
+        #person-table{
+            width:100%;
+            text-align: left;
+            /*合并边框*/
+            border-collapse: collapse;
+        }
+        #person-table tr{
+            height:50px;
+        }
+        #person-table thead tr{
+            background-color: #FAFAFA;
+        }
+        #person-table thead tr td{
+            /*font-weight设置字体的粗细*/
+            font-weight: normal;
+        }
+        .first-col{
+            padding-left: 10px;
+        }
+        .delete-row,.modify-row{
+            color: #0095F9;
+            cursor: pointer;
+        }
+        #row-template{
+            /*在没有添加人员时要把这一行隐藏起来，只有添加了一行就会显示一行*/
+            display:none;
+        }
+        #add-person{
+            float:right;
+            margin:15px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id="person-table-wrap">
+    <div class="person-table-title-wrap">
+        <span class="person-table-title">人员列表</span>
+        <button class="btn-commom" id="add-person">添加人员</button>
+    </div>
+    <table id="person-table">
+        <thead>
+        <tr>
+            <td class="first-col">人员名称</td>
+            <td>年龄</td>
+            <td>编号</td>
+            <td>操作</td>
+        </tr>
+        </thead>
+        <tbody id="person-list">
+        <tr id="row-template">
+            <td class="first-col"></td>
+            <td></td>
+            <td></td>
+            <td><a class="delete-row">删除</a>&nbsp;<a class="modify-row">修改</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+<div id="cover">
+    <div id="person-panel">
+<!--        表格第一栏，设置“添加人员”和关闭符号-->
+        <div class="person-panel-title">
+            <span class="person-panel-desc">添加人员</span>
+            <span id="person-panel-btn">X</span>
+        </div>
+<!--        hr为横线分割线-->
+        <hr>
+
+<!--        设置第二栏，包括 人员名称，年龄，编号-->
+        <div id="person-panel-input">
+            <label class="person-input-label"><span class="required-label">*</span>人员名称:
+            <input>
+            </label>
+            <label class="person-input-label">年龄：
+                <input>
+            </label>
+            <label class="person-input-label">编号：
+                <input>
+            </label>
+        </div>
+
+        <hr>
+<!--        第三栏，设置两个按钮 确认，取消-->
+        <div id="person-panel-btn-wrap">
+            <button id="submit-btn" class="btn-commom">确认</button>
+            <button id="cancel-btn" class="btn-commom">取消</button>
+        </div>
+    </div>
+
+<!--    进入JavaScript代码部分，调用jquery来编写-->
+    <script src="jquery-3.4.1.js"></script>
+    <script>
+        $(function(){
+            function clearPersonInput() {
+                $("#person-panel-input").each(function(index,obj){
+                    $(obj).val("");
+                });
+            }
+
+             $("#person-panel-btn,#cancel-btn").click(function(){
+                 clearPersonInput();
+                 $("#cover").hide();
+             });
+
+            $("#add-person").click(function(){
+                $("#cover").show();
+            });
+        //    设置点击“删除”时，会出现警示框询问“是否确定要删除”
+            $(".delete-row").click(function () {
+                if(confirm("确定要删除吗？")){
+                    $(this).closest('tr').remove();
+                }
+            });
+
+        //    点击“修改”执行的一系列事件。
+            $(".modify-row").click(function(){
+            //    获取待修改的数据，将每列数据取出来放到一个数组里。
+            //    not是过滤掉最后一个td，因为最后一个td里存放的是操作，不需要取。
+            //    map()先遍历，每一项都返回text值，然后map会自动将这些值去替换原先的值，最后get（）是把最后的结果转换为数组。
+                var oriRowValues = $(this).closest("tr").find("td").not(":last").map(function(){
+                    return $(this).text();
+                }).get();
+            //    将修改的这行数据填写到panel中。
+                for(var i in oriRowValues){
+                    $("#person-panel-input input").eq(i).val(oriRowValues[i]);
+                }
+
+
+            //    获取当前点击的是第几行。
+                var modifyIndex = $("#person-list tr").index($(this).closest('tr'));
+
+            //    将所在行数据写入该元素中，用来在panel确定的时候修改指定index行中的数据。
+            //    $(selector).data(name,value)用来向被选元素附加数据，name是数据的名称，value是数据的值。
+                $("#person-panel-desc").text("修改人员").data("modifyFlag",modifyIndex)
+                $("#cover").show();
+            });
+
+            //点击确认时执行的事件。
+            $("#submit-btn").click(function(){
+                var modifyIndex = $("#person-panel-desc").data("modifyFlag");
+
+                // 查询所有的添加窗口的input内容，将用户填写的内容转换成一个数组
+                var values = $("#person-panel-input input").map(function () {
+                    return $(this).val();
+                }).get();
+
+                if(modifyIndex === undefined){
+                //    添加
+                    addRow(values);
+                }else{
+                //    修改
+                    modifyRow(values,modifyIndex);
+                }
+                //removeData() 方法删除之前通过 data() 方法设置的数据。
+                $("#person-panel-desc").removeData("modifyFlag");
+                clearPersonInput();
+                $("#cover").hide();
+            })
+
+            function modifyRow(values,modifyIndex){
+            //    找到指定行的所有td
+            //    eq() 方法将匹配元素集缩减值指定 index 上的一个。children() 方法返回被选元素的所有直接子元素
+                var modifyTds = $("#person-list tr").eq(modifyIndex).children();
+                for (var i in values){
+                    modifyTds.eq(i).text(values[i]);
+                }
+            }
+
+            function addRow(values){
+            //    复制table中的一行tr元素，该元素隐藏，作为每次添加的模板
+                var newRow = $('#row-template').clone(true);
+            //    将复制的模板中的id属性移除
+                newRow.removeAttr('id');
+                for (var i in values){
+                    newRow.children().eq(i).text(values[i]);
+                }
+                $('#person-list').append(newRow);
+            }
+        });
+
+
+
+
+    </script>
+
+</body>
+</html>
