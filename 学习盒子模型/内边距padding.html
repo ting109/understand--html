@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box{
+            width:200px;
+            height:200px;
+            background-color: yellow;
+        /*    设置边框*/
+            border:10px red solid;
+
+        /*    内边距（padding）,指的是盒子的内容区与盒子边框之间的距离，
+        一共有四个方向的内边距，可以通过：
+                                       padding-left
+                                       padding-right
+                                       padding-top
+                                       padding-bottom
+                                       来设置四个方向的内边距
+         内边距会影响盒子的可见框的大小，元素的背景会延伸到内边距，即内边距的颜色和元素的背景颜色一致
+
+         盒子的大小由内容区、内边距、边框共同决定
+         盒子可见框的宽度=border-left-width+padding-left+width+border-right-width+padding-right+
+         盒子可见框的高度=border-top-width+padding-top+height+padding-bottom+border-bottom-width*/
+
+
+            /*    设置上内边距,设置之后盒子会变大*/
+            padding-top:100px;
+        /*    设置右内边距，左内边距，下内边距*/
+            padding-left:100px;
+            padding-right: 60px;
+            padding-bottom: 80px;
+
+        /*    使用padding可以同时设置四个内边距，规则和border一样
+        */
+        /*    padding:100px; 设置上下左右都为100px
+        padding:100px 200px; 设置上下为100px,左右为200px
+        padding:100px 200px 300px; 设置上为100px,左右为200px,下为300px
+        padding:100px 200px 300px 400px;设置上内边距为100px, 右内边距为200px, 下内边距为300px, 左内边距为400px*/
+        }
+
+
+        /*创建一个子元素box1占满box,即子元素也是width：200px; height:200px.
+        给该子元素设置背景颜色之后，就会覆盖掉原来父元素的内容区颜色，显示子元素设置的新颜色背景。
+        若在此之前设置了内边距的大小，此时的效果图中内边距背景颜色是原来父元素的背景颜色黄色，内容区域颜色为当前子元素的背景颜色暗红色。*/
+        .box1{
+            width:100%;
+            height:100%;
+            background-color: darkred;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+<!--    设置一个子元素-->
+    <div class="box1">Hello</div>
+</div>
+</body>
+</html>
